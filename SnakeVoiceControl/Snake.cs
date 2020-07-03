@@ -9,8 +9,8 @@ namespace SnakeVoiceControl
     public abstract class Snake
     {
         protected Area _area;
-        protected abstract ICollection<(int, int)> Body { get; set; }
-        protected bool IsDead { get; private set; }
+        public abstract ICollection<Cell> Body { get; protected set; }
+        public bool IsDead { get; protected set; }
 
         public Snake(Area area)
         {
@@ -18,49 +18,30 @@ namespace SnakeVoiceControl
             IsDead = false;
         }
 
-        public void GoTo(int x, int y)
-        {
-            var (headX, headY) = Body.First();
-
-            if (_area.CanGo(x, y))
-            {
-                if (Body.Contains((x, y)))
-                {
-                    IsDead = true;
-                    return;
-                }
-
-                Body.Prepend((x, y));
-                Body.Remove(Body.Last());
-            }
-            else
-            {
-                IsDead = true;
-            }
-        }
+        protected abstract void GoTo(int x, int y);
 
         public void GoLeft()
         {
-            var (headX, headY) = Body.First();
-            GoTo(headX - 1, headY);
+            var head = Body.First();
+            GoTo(head.X - 1, head.Y);
         }
 
         public void GoRight()
         {
-            var (headX, headY) = Body.First();
-            GoTo(headX + 1, headY);
+            var head = Body.First();
+            GoTo(head.X + 1, head.Y);
         }
 
         public void GoUp()
         {
-            var (headX, headY) = Body.First();
-            GoTo(headX, headY - 1);
+            var head = Body.First();
+            GoTo(head.X, head.Y - 1);
         }
 
         public void GoDown()
         {
-            var (headX, headY) = Body.First();
-            GoTo(headX, headY + 1);
+            var head = Body.First();
+            GoTo(head.X, head.Y + 1);
         }
     }
 }

@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SnakeVoiceControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="SnakeGame" Height="480" MinHeight="200" Width="720" MinWidth="300">
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
         
+        <Viewbox Grid.Row="0" Grid.Column="0" Width="{Binding}" Height="{Binding}" Stretch="Fill">
+            <Canvas Name="canvas" Background="Brown" Width="740" Height="500"/>
+        </Viewbox>
     </Grid>
 </Window>

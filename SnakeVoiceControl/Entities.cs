@@ -1,9 +1,10 @@
 ﻿namespace SnakeVoiceControl
 {
-    public enum Entity
+    public enum Entity : int
     {
         EMPTY,
         WALL,
         TARGET,
+        SNAKEPART,
     }
 }

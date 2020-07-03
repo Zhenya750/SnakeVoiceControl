@@ -8,13 +8,23 @@ namespace SnakeVoiceControl
 {
     public abstract class Area
     {
-        private Entity[,] _area;
-        private Dictionary<(int, int), Entity> _targets;
+        public abstract Dictionary<(int, int), Cell> Cells { get; protected set; }
+        public int WidthInCells { get; private set; }
+        public int HeightInCells { get; private set; }
 
         public Area(int widthInCells, int heightInCells)
         {
-            _area = new Entity[widthInCells, heightInCells];
-            _targets = new Dictionary<(int, int), Entity>();
+            Cells = new Dictionary<(int, int), Cell>();
+            WidthInCells = widthInCells;
+            HeightInCells = heightInCells;
+
+            for (int x = 0; x < WidthInCells; x++)
+            {
+                for (int y = 0; y < HeightInCells; y++)
+                {
+                    Cells.Add((x, y), new Cell(x, y, Entity.EMPTY));
+                }
+            }
         }
 
         public bool CanGo(int x, int y)
@@ -26,11 +36,5 @@ namespace SnakeVoiceControl
         {
             return false;
         }
-
-        public (int widthInCells, int heightInCells) GetBounds()
-        {
-            return (_area.GetLength(0), _area.GetLength(1));
-        }
-
     }
 }
