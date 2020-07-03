@@ -29,6 +29,11 @@ namespace SnakeVoiceControl
 
         protected override void GoTo(int x, int y)
         {
+            if (IsDead)
+            {
+                return;
+            }
+
             if (x < 0) x = _area.WidthInCells - 1;
             if (x >= _area.WidthInCells) x = 0;
             if (y < 0) y = _area.HeightInCells - 1;
@@ -47,11 +52,14 @@ namespace SnakeVoiceControl
 
                 (Body as LinkedList<Cell>).AddFirst(newHead);
 
-                var snakeEnd = Body.Last();
-                snakeEnd.Entity = Entity.EMPTY;
-                (Body as LinkedList<Cell>).RemoveLast();
+                if (_area.IsTarget(x, y) == false)
+                {
+                    var snakeEnd = Body.Last();
+                    snakeEnd.Entity = Entity.EMPTY;
+                    (Body as LinkedList<Cell>).RemoveLast();
+                    BringToArea(new[] { snakeEnd });
+                }
 
-                BringToArea(new[] { snakeEnd });
                 BringToArea(Body);
             }
             else

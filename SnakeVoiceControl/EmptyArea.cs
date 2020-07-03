@@ -8,11 +8,14 @@ namespace SnakeVoiceControl
 {
     public class EmptyArea : Area
     {
-        public override Dictionary<(int, int), Cell> Cells { get; protected set; }
-
         public EmptyArea(int widthInCells, int heightInCells)
             : base(widthInCells, heightInCells)
         {
+        }
+
+        public override void GenerateEntity(Entity entity, int count = 1)
+        {
+            return;
         }
     }
 }

@@ -38,16 +38,19 @@ namespace SnakeVoiceControl
         public MainWindow()
         {
             InitializeComponent();
-            PreviewKeyUp += foo;
+            PreviewKeyDown += foo;
 
             _cellToRect = new Dictionary<Cell, Rectangle>();
-            _area = new EmptyArea((int)canvas.Width / 20, (int)canvas.Height / 20);
+
+            _area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
+            _area.GenerateEntity(Entity.TARGET, 10);
+
             _snake = new ClassicSnake(_area);
 
             DrawCells(_area.Cells.Values);
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(250);
+            timer.Interval = TimeSpan.FromMilliseconds(200);
             timer.Tick += Timer_Tick;
         }
 
@@ -100,6 +103,7 @@ namespace SnakeVoiceControl
 
         private void foo(object sender, KeyEventArgs e)
         {
+            // push all the keys to QUEUE from where Despatcher will take and update
             bool gameStarted = Go != null;
 
             switch (e.Key)

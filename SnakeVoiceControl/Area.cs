@@ -8,7 +8,7 @@ namespace SnakeVoiceControl
 {
     public abstract class Area
     {
-        public abstract Dictionary<(int, int), Cell> Cells { get; protected set; }
+        public Dictionary<(int, int), Cell> Cells { get; protected set; }
         public int WidthInCells { get; private set; }
         public int HeightInCells { get; private set; }
 
@@ -27,12 +27,14 @@ namespace SnakeVoiceControl
             }
         }
 
-        public bool CanGo(int x, int y)
+        public abstract void GenerateEntity(Entity entity, int count = 1);
+
+        public virtual bool CanGo(int x, int y)
         {
             return true;
         }
 
-        public bool IsTarget(int x, int y)
+        public virtual bool IsTarget(int x, int y)
         {
             return false;
         }
