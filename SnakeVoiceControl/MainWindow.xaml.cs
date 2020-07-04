@@ -27,42 +27,50 @@ namespace SnakeVoiceControl
             Brushes.Red,
             Brushes.Green,
         };
-
-        private delegate void DirectSnake();
-        private DirectSnake Go;
-
         private Dictionary<Cell, Rectangle> _cellToRect;
         private Area _area;
         private Snake _snake;
 
+
+        private delegate void DirectSnake();
+        private DirectSnake Go;
+
+        private int GeneratedEntitiesCount = 10;
+
         public MainWindow()
         {
             InitializeComponent();
+
             PreviewKeyDown += foo;
 
             _cellToRect = new Dictionary<Cell, Rectangle>();
-
             _area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
-            _area.GenerateEntity(Entity.TARGET, 10);
-
+            _area.GenerateEntity(Entity.TARGET, GeneratedEntitiesCount);
             _snake = new ClassicSnake(_area);
 
             DrawCells(_area.Cells.Values);
 
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(200);
+            timer.Interval = TimeSpan.FromMilliseconds(50 * 4);
             timer.Tick += Timer_Tick;
         }
 
+        private TimeSpan _goneSeconds = new TimeSpan();
         private void Timer_Tick(object sender, EventArgs e)
         {
             GameTick();
+            _goneSeconds += timer.Interval;
         }
 
         private void GameTick()
         {
             Go();
             DrawCells(_area.Cells.Values);
+
+            if (_goneSeconds.TotalSeconds % 4 == 0)
+            {
+                _area.GenerateEntity(Entity.TARGET);
+            }
         }
 
         private void DrawCells(ICollection<Cell> cells)
@@ -119,8 +127,6 @@ namespace SnakeVoiceControl
                     break;
                 case Key.Right:
                     Go = _snake.GoRight;
-                    break;
-                default:
                     break;
             }
 

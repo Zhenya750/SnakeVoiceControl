@@ -9,7 +9,6 @@ namespace SnakeVoiceControl
     public class AreaWithTargets : Area
     {
         private Random random;
-        
 
         public AreaWithTargets(int widthInCells, int heightInCells)
             : base(widthInCells, heightInCells)

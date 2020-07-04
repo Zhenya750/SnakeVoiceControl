@@ -29,10 +29,10 @@ namespace SnakeVoiceControl
 
         protected override void GoTo(int x, int y)
         {
-            if (IsDead)
-            {
-                return;
-            }
+            //if (IsDead)
+            //{
+            //    return;
+            //}
 
             if (x < 0) x = _area.WidthInCells - 1;
             if (x >= _area.WidthInCells) x = 0;
