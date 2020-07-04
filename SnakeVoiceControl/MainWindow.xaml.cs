@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Speech.Recognition;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,20 +42,48 @@ namespace SnakeVoiceControl
         {
             InitializeComponent();
 
-            PreviewKeyDown += foo;
+            //PreviewKeyDown += foo;
 
-            _cellToRect = new Dictionary<Cell, Rectangle>();
-            _area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
-            _area.GenerateEntity(Entity.TARGET, GeneratedEntitiesCount);
-            _snake = new ClassicSnake(_area);
+            //_cellToRect = new Dictionary<Cell, Rectangle>();
+            //_area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
+            //_area.GenerateEntity(Entity.TARGET, GeneratedEntitiesCount);
+            //_snake = new ClassicSnake(_area);
 
-            DrawCells(_area.Cells.Values);
+            //DrawCells(_area.Cells.Values);
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromMilliseconds(50 * 4);
-            timer.Tick += Timer_Tick;
+
+
+            //timer = new DispatcherTimer();
+            //timer.Interval = TimeSpan.FromMilliseconds(50 * 4);
+            //timer.Tick += Timer_Tick;
+
+            System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-US");
+            SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine();
+            recEngine.SetInputToDefaultAudioDevice();
+
+            recEngine.SpeechRecognized += Recognized;
+
+            Choices commands = new Choices();
+            commands.Add(new[] { "hello" });
+
+            GrammarBuilder gb = new GrammarBuilder();
+            gb.Append(commands);
+            Grammar grammar = new Grammar(gb);
+
+            recEngine.LoadGrammar(grammar);
+
+
+
+            recEngine.RecognizeAsync(RecognizeMode.Multiple);
         }
 
+        private void Recognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            Console.WriteLine("recognized");
+            Console.WriteLine(e.Result.Text);
+        }
+
+        #region firstpart
         private TimeSpan _goneSeconds = new TimeSpan();
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -134,7 +163,16 @@ namespace SnakeVoiceControl
             {
                 timer.Start();
             }
-        }   
+        }
 
+        #endregion
+
+        #region speechpart
+
+        
+        
+        
+
+        #endregion
     }
 }
