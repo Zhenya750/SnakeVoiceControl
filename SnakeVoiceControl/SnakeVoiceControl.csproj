@@ -65,9 +65,13 @@
     <Compile Include="AreaWithTargets.cs" />
     <Compile Include="Cell.cs" />
     <Compile Include="ClassicSnake.cs" />
+    <Compile Include="Directions.cs" />
     <Compile Include="EmptyArea.cs" />
     <Compile Include="Entities.cs" />
+    <Compile Include="ISnakeController.cs" />
     <Compile Include="Snake.cs" />
+    <Compile Include="SnakeKeyController.cs" />
+    <Compile Include="SnakeVoiceController.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

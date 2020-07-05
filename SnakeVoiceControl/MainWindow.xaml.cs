@@ -28,60 +28,50 @@ namespace SnakeVoiceControl
             Brushes.Red,
             Brushes.Green,
         };
+
         private Dictionary<Cell, Rectangle> _cellToRect;
+
         private Area _area;
         private Snake _snake;
-
-
-        private delegate void DirectSnake();
-        private DirectSnake Go;
-
-        private int GeneratedEntitiesCount = 10;
+        private ISnakeController _snakeController;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            //PreviewKeyDown += foo;
+            PreviewKeyDown += KeyEventHandler;
 
-            //_cellToRect = new Dictionary<Cell, Rectangle>();
-            //_area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
-            //_area.GenerateEntity(Entity.TARGET, GeneratedEntitiesCount);
-            //_snake = new ClassicSnake(_area);
+            _cellToRect = new Dictionary<Cell, Rectangle>();
+            _area = new AreaWithTargets((int)canvas.Width / 20, (int)canvas.Height / 20);
+            _area.GenerateEntity(Entity.TARGET, 10);
+            _snake = new ClassicSnake(_area);
+            _snakeController = new SnakeKeyController();
 
-            //DrawCells(_area.Cells.Values);
-
-
-
-            //timer = new DispatcherTimer();
-            //timer.Interval = TimeSpan.FromMilliseconds(50 * 4);
-            //timer.Tick += Timer_Tick;
-
-            System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("en-US");
-            SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine();
-            recEngine.SetInputToDefaultAudioDevice();
-
-            recEngine.SpeechRecognized += Recognized;
-
-            Choices commands = new Choices();
-            commands.Add(new[] { "hello" });
-
-            GrammarBuilder gb = new GrammarBuilder();
-            gb.Append(commands);
-            Grammar grammar = new Grammar(gb);
-
-            recEngine.LoadGrammar(grammar);
+            DrawCells(_area.Cells.Values);
 
 
 
-            recEngine.RecognizeAsync(RecognizeMode.Multiple);
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromMilliseconds(50 * 4);
+            timer.Tick += Timer_Tick;
+
+            //System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("ru-ru");
+            //SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine();
+            //recEngine.SetInputToDefaultAudioDevice();
+
+            //recEngine.SpeechRecognized += Recognized;
+
+            //Choices commands = new Choices();
+            //commands.Add(new[] { "влево", "вправо", "вверх", "вниз" });
+
+            //GrammarBuilder gb = new GrammarBuilder();
+            //gb.Append(commands);
+            //Grammar grammar = new Grammar(gb);
+
+            //recEngine.LoadGrammar(grammar);
+            //recEngine.RecognizeAsync(RecognizeMode.Multiple);
         }
 
-        private void Recognized(object sender, SpeechRecognizedEventArgs e)
-        {
-            Console.WriteLine("recognized");
-            Console.WriteLine(e.Result.Text);
-        }
 
         #region firstpart
         private TimeSpan _goneSeconds = new TimeSpan();
@@ -91,9 +81,31 @@ namespace SnakeVoiceControl
             _goneSeconds += timer.Interval;
         }
 
+        private Direction _lastUsedDirection;
         private void GameTick()
         {
-            Go();
+            Direction direction = _snakeController.CanGetDirection() ?
+                _snakeController.GetDirection() :
+                _lastUsedDirection;
+
+            switch (direction)
+            {
+                case Direction.UP:
+                    _snake.GoUp();
+                    break;
+                case Direction.DOWN:
+                    _snake.GoDown();
+                    break;
+                case Direction.LEFT:
+                    _snake.GoLeft();
+                    break;
+                case Direction.RIGHT:
+                    _snake.GoRight();
+                    break;
+            }
+
+            _lastUsedDirection = direction;
+
             DrawCells(_area.Cells.Values);
 
             if (_goneSeconds.TotalSeconds % 4 == 0)
@@ -127,39 +139,23 @@ namespace SnakeVoiceControl
             else
             {
                 rect = new Rectangle();
-                rect.Height = rect.Width = 20;
+                rect.Height = rect.Width = 18;
+                rect.RadiusX = rect.RadiusY = 4;
                 rect.Fill = _entityToBrush[(int)cell.Entity];
 
-                Canvas.SetLeft(rect, cell.X * rect.Width);
-                Canvas.SetTop(rect, cell.Y * rect.Width);
+                Canvas.SetLeft(rect, cell.X * 20);
+                Canvas.SetTop(rect, cell.Y * 20);
 
                 canvas.Children.Add(rect);
                 _cellToRect.Add(cell, rect);
             }
         }
 
-        private void foo(object sender, KeyEventArgs e)
+        private void KeyEventHandler(object sender, KeyEventArgs e)
         {
-            // push all the keys to QUEUE from where Despatcher will take and update
-            bool gameStarted = Go != null;
+            _snakeController.AddEvent(sender, e);
 
-            switch (e.Key)
-            {
-                case Key.Up:
-                    Go = _snake.GoUp;
-                    break;
-                case Key.Down:
-                    Go = _snake.GoDown;
-                    break;
-                case Key.Left:
-                    Go = _snake.GoLeft;
-                    break;
-                case Key.Right:
-                    Go = _snake.GoRight;
-                    break;
-            }
-
-            if (gameStarted == false)
+            if (timer.IsEnabled == false)
             {
                 timer.Start();
             }
@@ -169,9 +165,11 @@ namespace SnakeVoiceControl
 
         #region speechpart
 
-        
-        
-        
+        // private void Recognized(object sender, SpeechRecognizedEventArgs e)
+        //{
+        //    Console.WriteLine("recognized");
+        //    Console.WriteLine(e.Result.Text);
+        //}
 
         #endregion
     }
