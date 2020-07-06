@@ -3,19 +3,35 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:SnakeVoiceControl"
         mc:Ignorable="d"
-        Title="SnakeGame" Height="480" MinHeight="200" Width="720" MinWidth="300">
-    <Grid>
+        Title="SnakeGame" Height="305.6" MinHeight="300" Width="126" MinWidth="450">
+
+    <Grid Background="#AF6E3C">
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition />
         </Grid.RowDefinitions>
-        
-        <Viewbox Grid.Row="0" Grid.Column="0" Width="{Binding}" Height="{Binding}" Stretch="Fill">
-            <Canvas Name="canvas" Background="Brown" Width="740" Height="500"/>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+            <Button Name="bStart" Content="Start" Grid.Column="0" Grid.Row="0" Width="64" Margin="5" Padding="5"/>
+            <Button Name="bStop" Content="Stop" Grid.Column="0" Grid.Row="0" Width="64" Margin="0 5 5 5" Padding="5"/>
+
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Controllers" VerticalAlignment="Center" Foreground="#FFAA5E" Margin="5 0 0 0"/>
+                <ToggleButton Name="bMicrophone" Content="Microphone" Width="100" Margin="0 5 5 5" Padding="5"/>
+                <ToggleButton Name="bKeyboardArrows" Content="Keyboard arrows" Width="100" Margin="0 5 5 5" Padding="5"/>
+            </StackPanel>
+        </StackPanel>
+
+        <Viewbox Grid.Row="1" Grid.Column="0" Width="{Binding}" Height="{Binding}" Stretch="Fill">
+            <Canvas Name="canvas" Background="Brown" Width="740" Height="500">
+                <Image Source="Images/background.jpg" Width="{Binding ElementName=canvas, Path=ActualWidth}" Height="{Binding ElementName=canvas, Path=ActualHeight}" Stretch="Fill"/>
+            </Canvas>
         </Viewbox>
     </Grid>
 </Window>

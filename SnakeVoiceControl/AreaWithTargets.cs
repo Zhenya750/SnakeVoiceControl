@@ -23,18 +23,21 @@ namespace SnakeVoiceControl
                 return;
             }
 
+            List<Cell> emptyEntities = Cells.Values
+                .Where(x => x.Entity == Entity.EMPTY)
+                .ToList();
+
             while (count-- > 0)
             {
                 Cell cell;
-            
-                do
-                {
-                    cell = Cells.Values.ToList()[random.Next() % Cells.Count];
-                }
-                while (cell.Entity != Entity.EMPTY);
-
+                cell = emptyEntities[random.Next() % emptyEntities.Count];
                 cell.Entity = entity;
             }
+        }
+
+        public override bool CanGo(int x, int y)
+        {
+            return true;
         }
 
         public override bool IsTarget(int x, int y)

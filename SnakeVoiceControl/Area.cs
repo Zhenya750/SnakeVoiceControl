@@ -29,14 +29,8 @@ namespace SnakeVoiceControl
 
         public abstract void GenerateEntity(Entity entity, int count = 1);
 
-        public virtual bool CanGo(int x, int y)
-        {
-            return true;
-        }
+        public abstract bool CanGo(int x, int y);
 
-        public virtual bool IsTarget(int x, int y)
-        {
-            return false;
-        }
+        public abstract bool IsTarget(int x, int y);
     }
 }
