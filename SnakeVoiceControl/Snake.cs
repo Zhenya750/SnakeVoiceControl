@@ -20,25 +20,25 @@ namespace SnakeVoiceControl
 
         protected abstract void GoTo(int x, int y);
 
-        public void GoLeft()
+        public virtual void GoLeft()
         {
             var head = Body.First();
             GoTo(head.X - 1, head.Y);
         }
 
-        public void GoRight()
+        public virtual void GoRight()
         {
             var head = Body.First();
             GoTo(head.X + 1, head.Y);
         }
 
-        public void GoUp()
+        public virtual void GoUp()
         {
             var head = Body.First();
             GoTo(head.X, head.Y - 1);
         }
 
-        public void GoDown()
+        public virtual void GoDown()
         {
             var head = Body.First();
             GoTo(head.X, head.Y + 1);

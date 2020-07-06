@@ -86,7 +86,7 @@ namespace SnakeVoiceControl
 
             if (_goneSeconds.TotalSeconds % 2 == 0)
             {
-                _area.GenerateEntity(Entity.TARGET);
+                _area.GenerateEntity(Entity.Target);
             }
         }
 
@@ -109,9 +109,12 @@ namespace SnakeVoiceControl
 
             _timer.Stop();
             _goneSeconds = new TimeSpan(0);
-            _area.TransformEntities(Entity.SNAKEPART, Entity.EMPTY);
-            _area.TransformEntities(Entity.TARGET, Entity.EMPTY);
-            _area.TransformEntities(Entity.WALL, Entity.EMPTY);
+            _area.TransformEntities(Entity.SnakeAliveHead, Entity.Empty);
+            _area.TransformEntities(Entity.SnakeStraightBodyPart, Entity.Empty);
+            _area.TransformEntities(Entity.SnakeBendBodyPart, Entity.Empty);
+            _area.TransformEntities(Entity.SnakeDeadHead, Entity.Empty);
+            _area.TransformEntities(Entity.Target, Entity.Empty);
+            _area.TransformEntities(Entity.Wall, Entity.Empty);
             _snake = new ClassicSnake(_area);
 
             _drawer.DrawCells(_area.Cells.Values);

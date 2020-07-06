@@ -14,6 +14,7 @@ namespace SnakeVoiceControl
     {
         private Canvas _canvas;
         private Dictionary<Cell, Rectangle> _cellToRect;
+        private readonly ImageBrush[] _entityToImage;
         private readonly SolidColorBrush[] _entityToBrush;
         private readonly int[] _entityToSize;
         private readonly int[] _entityToRadius;
@@ -30,6 +31,9 @@ namespace SnakeVoiceControl
                 Brushes.Gray,
                 Brushes.Red,
                 Brushes.Green,
+                Brushes.LightGreen,
+                Brushes.Pink,
+                Brushes.Yellow,
             };
 
             _entityToSize = new int[]
@@ -37,6 +41,9 @@ namespace SnakeVoiceControl
                 20,
                 20,
                 20,
+                18,
+                18,
+                18,
                 18,
             };
 
@@ -46,6 +53,20 @@ namespace SnakeVoiceControl
                 0,
                 7,
                 4,
+                4,
+                4,
+                4,
+            };
+
+            _entityToImage = new ImageBrush[]
+            {
+                null,
+                null,
+                new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/target.png") as ImageSource),
+                null,
+                null,
+                null,
+                null,
             };
         }
 
@@ -59,11 +80,6 @@ namespace SnakeVoiceControl
 
         public void DrawCell(Cell cell)
         {
-            if (_cellToRect == null)
-            {
-                return;
-            }
-
             Rectangle rect;
 
             if (_cellToRect.ContainsKey(cell))
@@ -80,16 +96,18 @@ namespace SnakeVoiceControl
                 _canvas.Children.Add(rect);
                 _cellToRect.Add(cell, rect);
             }
-
-            if (cell.Entity == Entity.TARGET)
+            
+            if (_entityToImage[(int)cell.Entity] != null)
             {
-                rect.Fill = new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/target.png") as ImageSource);
+                rect.Fill = _entityToImage[(int)cell.Entity];
             }
             else
             {
                 rect.Fill = _entityToBrush[(int)cell.Entity];
             }
+
             rect.Width = rect.Height = _entityToSize[(int)cell.Entity];
+            rect.RenderTransform = new RotateTransform(cell.EntityAngle, rect.Width / 2, rect.Height / 2);
             rect.RadiusX = rect.RadiusY = _entityToRadius[(int)cell.Entity];
         }
     }

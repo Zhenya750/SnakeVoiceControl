@@ -22,7 +22,7 @@ namespace SnakeVoiceControl
             {
                 for (int y = 0; y < HeightInCells; y++)
                 {
-                    Cells.Add((x, y), new Cell(x, y, Entity.EMPTY));
+                    Cells.Add((x, y), new Cell(x, y, Entity.Empty));
                 }
             }
         }

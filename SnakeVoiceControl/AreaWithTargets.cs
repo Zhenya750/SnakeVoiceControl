@@ -18,13 +18,13 @@ namespace SnakeVoiceControl
 
         public override void GenerateEntity(Entity entity, int count = 1)
         {
-            if (entity == Entity.EMPTY)
+            if (entity == Entity.Empty)
             {
                 return;
             }
 
             List<Cell> emptyEntities = Cells.Values
-                .Where(x => x.Entity == Entity.EMPTY)
+                .Where(x => x.Entity == Entity.Empty)
                 .ToList();
 
             while (count-- > 0)
@@ -42,7 +42,7 @@ namespace SnakeVoiceControl
 
         public override bool IsTarget(int x, int y)
         {
-            return Cells[(x, y)].Entity == Entity.TARGET;
+            return Cells[(x, y)].Entity == Entity.Target;
         }
     }
 }

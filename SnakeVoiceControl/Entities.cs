@@ -2,9 +2,12 @@
 {
     public enum Entity : int
     {
-        EMPTY,
-        WALL,
-        TARGET,
-        SNAKEPART,
+        Empty,
+        Wall,
+        Target,
+        SnakeStraightBodyPart,
+        SnakeAliveHead,
+        SnakeDeadHead,
+        SnakeBendBodyPart,
     }
 }
