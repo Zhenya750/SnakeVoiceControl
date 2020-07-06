@@ -17,14 +17,13 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Name="bStart" Content="Start" Grid.Column="0" Grid.Row="0" Width="64" Margin="5" Padding="5"/>
-            <Button Name="bStop" Content="Stop" Grid.Column="0" Grid.Row="0" Width="64" Margin="0 5 5 5" Padding="5"/>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+            <Button Name="bRestart" Content="Restart" Grid.Column="0" Grid.Row="0" Width="64" Margin="5" Padding="5" Click="BRestart_Click"/>
 
             <StackPanel Orientation="Horizontal">
                 <Label Content="Controllers" VerticalAlignment="Center" Foreground="#FFAA5E" Margin="5 0 0 0"/>
-                <ToggleButton Name="bMicrophone" Content="Microphone" Width="100" Margin="0 5 5 5" Padding="5"/>
-                <ToggleButton Name="bKeyboardArrows" Content="Keyboard arrows" Width="100" Margin="0 5 5 5" Padding="5"/>
+                <ToggleButton Name="bMicrophone" Content="Microphone" Width="100" Margin="0 5 5 5" Padding="5" IsEnabled="False"/>
+                <ToggleButton Name="bKeyboardArrows" Content="Keyboard arrows" Width="100" Margin="0 5 5 5" Padding="5" IsChecked="True" Checked="BKeyboardArrows_Checked" Unchecked="BKeyboardArrows_Unchecked"/>
             </StackPanel>
         </StackPanel>
 

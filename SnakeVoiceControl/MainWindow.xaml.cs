@@ -1,8 +1,8 @@
-﻿using Microsoft.Speech.Recognition;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -37,26 +37,9 @@ namespace SnakeVoiceControl
             InitGraphicObjects();
             
             _drawer.DrawCells(_area.Cells.Values);
-            KeyDown += KeyEventHandler;
-            
-
-            //System.Globalization.CultureInfo ci = new System.Globalization.CultureInfo("ru-ru");
-            //SpeechRecognitionEngine recEngine = new SpeechRecognitionEngine();
-            //recEngine.SetInputToDefaultAudioDevice();
-
-            //recEngine.SpeechRecognized += Recognized;
-
-            //Choices commands = new Choices();
-            //commands.Add(new[] { "влево", "вправо", "вверх", "вниз" });
-
-            //GrammarBuilder gb = new GrammarBuilder();
-            //gb.Append(commands);
-            //Grammar grammar = new Grammar(gb);
-
-            //recEngine.LoadGrammar(grammar);
-            //recEngine.RecognizeAsync(RecognizeMode.Multiple);
         }
 
+        #region GameEngine
         private void InitLogicObjects()
         {
             _area = new AreaWithTargets((int)canvas.Width / Drawer.CellSize, (int)canvas.Height / Drawer.CellSize);
@@ -107,26 +90,31 @@ namespace SnakeVoiceControl
             }
         }
 
-        private void KeyEventHandler(object sender, KeyEventArgs e)
-        {
-            _snakeController.AddEvent(sender, e);
-            StartGame();
-        }
-
         private void StartGame()
-        {
-            if (_timer.IsEnabled == false)
-            {
-                _timer.Start();
-            }
-        }
-
-        private void StopGame()
         {
             if (_timer.IsEnabled)
             {
-                _timer.Stop();
+                return;
             }
+
+            _timer.Start();
+        }
+
+        private void RestartGame()
+        {
+            if (_timer.IsEnabled == false)
+            {
+                return;
+            }
+
+            _timer.Stop();
+            _goneSeconds = new TimeSpan(0);
+            _area.TransformEntities(Entity.SNAKEPART, Entity.EMPTY);
+            _area.TransformEntities(Entity.TARGET, Entity.EMPTY);
+            _area.TransformEntities(Entity.WALL, Entity.EMPTY);
+            _snake = new ClassicSnake(_area);
+
+            _drawer.DrawCells(_area.Cells.Values);
         }
 
         private void InitGraphicObjects()
@@ -134,14 +122,30 @@ namespace SnakeVoiceControl
             _drawer = new Drawer(canvas);
         }
 
-        
+        #endregion
 
+        // events
+        private void KeyEventHandler(object sender, KeyEventArgs e)
+        {
+            _snakeController.AddEvent(sender, e);
+            StartGame();
+        }
 
-        // private void Recognized(object sender, SpeechRecognizedEventArgs e)
-        //{
-        //    Console.WriteLine("recognized");
-        //    Console.WriteLine(e.Result.Text);
-        //}
-        
+        private void BRestart_Click(object sender, RoutedEventArgs e)
+        {
+            RestartGame();
+        }
+
+        private void BKeyboardArrows_Checked(object sender, RoutedEventArgs e)
+        {
+            bMicrophone.IsChecked = false;
+            _snakeController = new SnakeKeyController();
+            KeyDown += KeyEventHandler;
+        }
+
+        private void BKeyboardArrows_Unchecked(object sender, RoutedEventArgs e)
+        {
+            KeyDown -= KeyEventHandler;
+        }
     }
 }

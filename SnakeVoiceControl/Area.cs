@@ -29,6 +29,14 @@ namespace SnakeVoiceControl
 
         public abstract void GenerateEntity(Entity entity, int count = 1);
 
+        public virtual void TransformEntities(Entity from, Entity to)
+        {
+            foreach (var cell in Cells.Values.Where(x => x.Entity == from))
+            {
+                cell.Entity = to;
+            }
+        }
+
         public abstract bool CanGo(int x, int y);
 
         public abstract bool IsTarget(int x, int y);
