@@ -10,7 +10,7 @@ namespace SnakeVoiceControl
     {
         public SnakeVoiceController()
         {
-
+            throw new NotImplementedException();
         }
 
         public void AddEvent(object sender, EventArgs e)
