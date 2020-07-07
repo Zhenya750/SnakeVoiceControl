@@ -25,33 +25,39 @@ namespace SnakeVoiceControl
 
             _entityToBrush = new SolidColorBrush[]
             {
-                Brushes.Transparent,
-                Brushes.Gray,
-                Brushes.Red,
-                Brushes.Green,
-                Brushes.LightGreen,
-                Brushes.Pink,
-                Brushes.Yellow,
-                Brushes.Blue,
+                Brushes.Transparent,    // Empty
+                Brushes.Gray,           // Wall
+                Brushes.Red,            // Target
+                Brushes.Green,          // SnakeStraightbodyPart
+                Brushes.LightGreen,     // SnakeAliveHead
+                Brushes.Pink,           // SnakeDeadHead
+                Brushes.Yellow,         // SnakeBendBodyPart
+                Brushes.Blue,           // SnakeEndBodyPart
             };
 
+            _entityToImage = new ImageBrush[]
+            {
+                null,
+                LoadImageBrush("Images/Wall.png"),
+                LoadImageBrush("Images/Target.png"),
+                LoadImageBrush("Images/SnakeStraightBodyPart.png"),
+                LoadImageBrush("Images/SnakeAliveHead.png"),
+                LoadImageBrush("Images/SnakeDeadHead.png"),
+                LoadImageBrush("Images/SnakeBendBodyPart.png"),
+                LoadImageBrush("Images/SnakeEndBodyPart.png"),
+            };
+        }
+
+        private ImageBrush LoadImageBrush(string path)
+        {
             try
             {
-                _entityToImage = new ImageBrush[]
-                {
-                    null,
-                    null,
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/target.png") as ImageSource),
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeStraightBodyPart.png") as ImageSource),
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeAliveHead.png") as ImageSource),
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeDeadHead.png") as ImageSource),
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeBendBodyPart.png") as ImageSource),
-                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeEndBodyPart.png") as ImageSource),
-                };
+                return new ImageBrush(new ImageSourceConverter().ConvertFromString(path) as ImageSource);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _entityToImage = new ImageBrush[] { null, null, null, null, null, null, null, null };
+                Console.WriteLine(e.Message);
+                return null;
             }
         }
 

@@ -11,37 +11,34 @@ namespace SnakeVoiceControl
     public class SnakeKeyController : ISnakeController
     {
         private Queue<Direction> _inputDirections;
+        private readonly Dictionary<Key, Direction> _keyToDirection; 
 
         public SnakeKeyController()
         {
             _inputDirections = new Queue<Direction>();
+            _keyToDirection = new Dictionary<Key, Direction>
+            {
+                { Key.Up,    Direction.Up },
+                { Key.Down,  Direction.Down },
+                { Key.Left,  Direction.Left },
+                { Key.Right, Direction.Right },
+            };
         }
 
         public void AddEvent(object sender, EventArgs e)
         {
             if (e is KeyEventArgs)
             {
-                switch ((e as KeyEventArgs).Key)
+                if (_keyToDirection.ContainsKey((e as KeyEventArgs).Key))
                 {
-                    case Key.Up:
-                        _inputDirections.Enqueue(Direction.UP);
-                        break;
-                    case Key.Down:
-                        _inputDirections.Enqueue(Direction.DOWN);
-                        break;
-                    case Key.Left:
-                        _inputDirections.Enqueue(Direction.LEFT);
-                        break;
-                    case Key.Right:
-                        _inputDirections.Enqueue(Direction.RIGHT);
-                        break;
+                    _inputDirections.Enqueue(_keyToDirection[(e as KeyEventArgs).Key]);
                 }
             }
         }
 
         public Direction GetDirection()
         {
-            if (_inputDirections.Peek() == Direction.UNKNOWN)
+            if (_inputDirections.Peek() == Direction.Unknown)
             {
                 throw new Exception("Unexpected direction");
             }

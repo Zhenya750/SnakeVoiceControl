@@ -67,6 +67,7 @@
     <Compile Include="Drawer.cs" />
     <Compile Include="EmptyArea.cs" />
     <Compile Include="Entities.cs" />
+    <Compile Include="GameProcess.cs" />
     <Compile Include="ISnakeController.cs" />
     <Compile Include="Snake.cs" />
     <Compile Include="SnakeKeyController.cs" />
@@ -122,15 +123,18 @@
     <Resource Include="Images\SnakeStraightBodyPart.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\background.jpg">
+    <Resource Include="Images\Background.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Resource Include="Images\target.png">
+    <Resource Include="Images\Target.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\SnakeDeadHead.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Wall.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

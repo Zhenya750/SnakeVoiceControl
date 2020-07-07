@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:local="clr-namespace:SnakeVoiceControl"
         mc:Ignorable="d"
         Title="SnakeGame" Height="305.6" MinHeight="300" Width="126" MinWidth="450">
@@ -23,13 +22,13 @@
             <StackPanel Orientation="Horizontal">
                 <Label Content="Controllers" VerticalAlignment="Center" Foreground="#FFAA5E" Margin="5 0 0 0"/>
                 <ToggleButton Name="bMicrophone" Content="Microphone" Width="100" Margin="0 5 5 5" Padding="5" IsEnabled="False"/>
-                <ToggleButton Name="bKeyboardArrows" Content="Keyboard arrows" Width="100" Margin="0 5 5 5" Padding="5" IsChecked="True" Checked="BKeyboardArrows_Checked" Unchecked="BKeyboardArrows_Unchecked"/>
+                <ToggleButton Name="bKeyboardArrows" Content="Keyboard arrows" Width="100" Margin="0 5 5 5" Padding="5" Checked="BKeyboardArrows_Checked" Unchecked="BKeyboardArrows_Unchecked"/>
             </StackPanel>
         </StackPanel>
 
         <Viewbox Grid.Row="1" Grid.Column="0" Width="{Binding}" Height="{Binding}" Stretch="Fill">
-            <Canvas Name="canvas" Background="Brown" Width="740" Height="500">
-                <Image Source="Images/background.jpg" Width="{Binding ElementName=canvas, Path=ActualWidth}" Height="{Binding ElementName=canvas, Path=ActualHeight}" Stretch="Fill"/>
+            <Canvas Name="canvas" Background="#DC9A5E" Width="740" Height="500">
+                <Image Source="Images/Background.jpg" Width="{Binding ElementName=canvas, Path=ActualWidth}" Height="{Binding ElementName=canvas, Path=ActualHeight}" Stretch="Fill"/>
             </Canvas>
         </Viewbox>
     </Grid>

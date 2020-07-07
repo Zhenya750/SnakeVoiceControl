@@ -20,74 +20,33 @@ namespace SnakeVoiceControl
     public partial class MainWindow : Window
     {
         private Drawer _drawer;
-
-        private Area _area;
-        private Snake _snake;
-        private ISnakeController _snakeController;
-        private Direction _lastUsedDirection;
-
         private DispatcherTimer _timer;
-        private TimeSpan _goneSeconds;
+        private GameProcess _process;
+        private TimeSpan _gone;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            InitLogicObjects();
-            InitGraphicObjects();
-            
-            _drawer.DrawCells(_area.Cells.Values);
-        }
-
-        #region GameEngine
-        private void InitLogicObjects()
-        {
-            _area = new AreaWithTargets((int)canvas.Width / Drawer.CellSize, (int)canvas.Height / Drawer.CellSize);
-            _snake = new ClassicSnake(_area);
-            _snakeController = new SnakeKeyController();
-            _lastUsedDirection = Direction.UNKNOWN;
+            var area = new AreaWithTargets((int)canvas.Width / Drawer.CellSize, (int)canvas.Height / Drawer.CellSize);
+            var snake = new ClassicSnake(area);
+            _process = new GameProcess(area, snake, null);
 
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromMilliseconds(100);
-            _timer.Tick += Timer_Tick;
+            _timer.Tick += TimerTick;
+            _gone = new TimeSpan(0);
 
-            _goneSeconds = new TimeSpan();
+            _drawer = new Drawer(canvas);
+            _drawer.DrawCells(_process.Cells);
+            
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void TimerTick(object sender, EventArgs e)
         {
-            GameTick();
-            _goneSeconds += _timer.Interval;
-        }
-
-        private void GameTick()
-        {
-            _lastUsedDirection = _snakeController.CanGetDirection() ?
-                _snakeController.GetDirection() :
-                _lastUsedDirection;
-
-            switch (_lastUsedDirection)
-            {
-                case Direction.UP:
-                    _snake.GoUp();
-                    break;
-                case Direction.DOWN:
-                    _snake.GoDown();
-                    break;
-                case Direction.LEFT:
-                    _snake.GoLeft();
-                    break;
-                case Direction.RIGHT:
-                    _snake.GoRight();
-                    break;
-            }
-
-            _drawer.DrawCells(_area.Cells.Values);
-
-            if (_goneSeconds.TotalSeconds % 2 == 0)
-            {
-                _area.GenerateEntity(Entity.Target);
-            }
+            _gone += _timer.Interval;
+            _process.GameTick(_gone);
+            _drawer.DrawCells(_process.Cells);
         }
 
         private void StartGame()
@@ -102,37 +61,15 @@ namespace SnakeVoiceControl
 
         private void RestartGame()
         {
-            if (_timer.IsEnabled == false)
-            {
-                return;
-            }
-
             _timer.Stop();
-            _goneSeconds = new TimeSpan(0);
-
-            _area.TransformEntities(Entity.SnakeAliveHead, Entity.Empty);
-            _area.TransformEntities(Entity.SnakeStraightBodyPart, Entity.Empty);
-            _area.TransformEntities(Entity.SnakeBendBodyPart, Entity.Empty);
-            _area.TransformEntities(Entity.SnakeDeadHead, Entity.Empty);
-            _area.TransformEntities(Entity.SnakeEndBodyPart, Entity.Empty);
-            _area.TransformEntities(Entity.Target, Entity.Empty);
-            _area.TransformEntities(Entity.Wall, Entity.Empty);
-            _snake = new ClassicSnake(_area);
-
-            _drawer.DrawCells(_area.Cells.Values);
+            _gone = new TimeSpan(0);
+            _process.Restart();
+            _drawer.DrawCells(_process.Cells);
         }
 
-        private void InitGraphicObjects()
-        {
-            _drawer = new Drawer(canvas);
-        }
-
-        #endregion
-
-        // events
         private void KeyEventHandler(object sender, KeyEventArgs e)
         {
-            _snakeController.AddEvent(sender, e);
+            _process.AddEvent(sender, e);
             StartGame();
         }
 
@@ -143,8 +80,7 @@ namespace SnakeVoiceControl
 
         private void BKeyboardArrows_Checked(object sender, RoutedEventArgs e)
         {
-            bMicrophone.IsChecked = false;
-            _snakeController = new SnakeKeyController();
+            _process.Controller = new SnakeKeyController();
             KeyDown += KeyEventHandler;
         }
 

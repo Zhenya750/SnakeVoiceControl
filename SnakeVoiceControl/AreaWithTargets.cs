@@ -37,7 +37,7 @@ namespace SnakeVoiceControl
 
         public override bool CanGo(int x, int y)
         {
-            return true;
+            return Cells[(x, y)].Entity != Entity.Wall;
         }
 
         public override bool IsTarget(int x, int y)

@@ -15,8 +15,10 @@ namespace SnakeVoiceControl
         {
             Body = new LinkedList<Cell>();
             var head = new Cell(_area.WidthInCells / 2, _area.HeightInCells / 2, Entity.SnakeAliveHead);
+            var end = new Cell(head.X - 1, head.Y, Entity.SnakeEndBodyPart);
             Body.Add(head);
-            BringToArea(new[] { head });
+            Body.Add(end);
+            BringToArea(Body);
         }
 
         private void BringToArea(ICollection<Cell> cells)
@@ -30,10 +32,10 @@ namespace SnakeVoiceControl
 
         protected override void GoTo(int x, int y)
         {
-            //if (IsDead)
-            //{
-            //    return;
-            //}
+            if (IsDead)
+            {
+                return;
+            }
 
             if (x < 0) x = _area.WidthInCells - 1;
             if (x >= _area.WidthInCells) x = 0;
@@ -41,44 +43,38 @@ namespace SnakeVoiceControl
             if (y >= _area.HeightInCells) y = 0;
 
             var oldHead = Body.First();
-            var newHead = new Cell(x, y, Entity.SnakeAliveHead);
+            var newHead = new Cell(x, y, oldHead.Entity);
 
-            if (_area.CanGo(x, y))
-            {
-                if (Body.Contains(newHead))
-                {
-                    IsDead = true;
-                    oldHead.Entity = Entity.SnakeDeadHead;
-                    BringToArea(new[] { Body.First() });
-                    return;
-                }
-
-                oldHead.Entity = Entity.SnakeStraightBodyPart;
-                (Body as LinkedList<Cell>).AddFirst(newHead);
-
-                if (_area.IsTarget(x, y) == false)
-                {
-                    var snakeEnd = Body.Last();
-                    snakeEnd.Entity = Entity.Empty;
-                    snakeEnd.EntityAngle = 0;
-                    Body.Remove(snakeEnd);
-                    BringToArea(new[] { snakeEnd });
-                }
-
-                Cell thirdPart = Body.Count > 2 ? Body.ElementAt(2) : null;
-                SmoothBody(newHead, oldHead, thirdPart);
-
-                if (Body.Count >= 2)
-                {
-                    Body.Last().Entity = Entity.SnakeEndBodyPart;
-                }
-
-                BringToArea(Body);
-            }
-            else
-            {
+            if (_area.CanGo(x, y) == false ||
+                Body.Contains(newHead))
+            { 
                 IsDead = true;
+                oldHead.Entity = Entity.SnakeDeadHead;
+                BringToArea(new[] { Body.First() });
+                return;
             }
+
+            oldHead.Entity = Entity.SnakeStraightBodyPart;
+            (Body as LinkedList<Cell>).AddFirst(newHead);
+
+            if (_area.IsTarget(x, y) == false)
+            {
+                var snakeEnd = Body.Last();
+                snakeEnd.Entity = Entity.Empty;
+                snakeEnd.EntityAngle = 0;
+                Body.Remove(snakeEnd);
+                BringToArea(new[] { snakeEnd });
+            }
+
+            Cell thirdPart = Body.Count > 2 ? Body.ElementAt(2) : null;
+            SmoothBody(newHead, oldHead, thirdPart);
+
+            if (Body.Count >= 2)
+            {
+                Body.Last().Entity = Entity.SnakeEndBodyPart;
+            }
+
+            BringToArea(Body);
         }
 
         private void SmoothBody(Cell first, Cell second, Cell third)
@@ -129,7 +125,6 @@ namespace SnakeVoiceControl
 
         private void BendSecondPart(Cell first, Cell second, Cell third)
         {
-            // bent second part
             int w = _area.WidthInCells;
             int h = _area.HeightInCells;
             var (x0, y0) = (first.X, first.Y);
@@ -171,7 +166,6 @@ namespace SnakeVoiceControl
 
         private void SmoothEndPart()
         {
-            // end part
             var end = Body.Last();
             if (end.Entity == Entity.SnakeBendBodyPart)
             {
