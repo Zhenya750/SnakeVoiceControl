@@ -60,13 +60,17 @@ namespace SnakeVoiceControl
                 {
                     var snakeEnd = Body.Last();
                     snakeEnd.Entity = Entity.Empty;
-                    (Body as LinkedList<Cell>).RemoveLast();
+                    snakeEnd.EntityAngle = 0;
+                    Body.Remove(snakeEnd);
                     BringToArea(new[] { snakeEnd });
                 }
 
-                if (Body.Count >= 3)
+                Cell thirdPart = Body.Count > 2 ? Body.ElementAt(2) : null;
+                SmoothBody(newHead, oldHead, thirdPart);
+
+                if (Body.Count >= 2)
                 {
-                    SmoothBody();
+                    Body.Last().Entity = Entity.SnakeEndBodyPart;
                 }
 
                 BringToArea(Body);
@@ -77,90 +81,124 @@ namespace SnakeVoiceControl
             }
         }
 
-        private void SmoothBody()
+        private void SmoothBody(Cell first, Cell second, Cell third)
         {
-            var first = Body.First();
-            var second = Body.ElementAt(1);
-            var third = Body.ElementAt(2);
+            SmoothHead(first, second);
 
-            // rotate head
-            if (first.X != second.X)
+            if (third == null)
             {
-                if (first.X < second.X)
-                {
-                    first.EntityAngle = 180;
-                }
-
-                if (first.X > second.X)
-                {
-                    first.EntityAngle = 0;
-                }
-            }
-            else
-            {
-                if (first.Y < second.Y)
-                {
-                    first.EntityAngle = 90;
-                }
-
-                if (first.Y > second.Y)
-                {
-                    first.EntityAngle = 270;
-                }
+                return;
             }
 
+            BendSecondPart(first, second, third);
+            SmoothEndPart();
+        }
+
+        private void SmoothHead(Cell first, Cell second)
+        {
+            int w = _area.WidthInCells;
+            int h = _area.HeightInCells;
+            var (x0, y0) = (first.X, first.Y);
+            var (x1, y1) = (second.X, second.Y);
+            var (x, y) = (x0 - x1, y0 - y1);
+
+            if (x == 0 && (y == -1 || y == h - 1))
+            {
+                first.EntityAngle = 270;
+                second.EntityAngle = 270;
+            }
+
+            if ((x == -1 || x == w - 1) && y == 0)
+            {
+                first.EntityAngle = 180;
+                second.EntityAngle = 180;
+            }
+
+            if (x == 0 && (y == 1 || y == 1 - h))
+            {
+                first.EntityAngle = 90;
+                second.EntityAngle = 90;
+            }
+
+            if ((x == 1 || x == 1 - w) && y == 0)
+            {
+                first.EntityAngle = 0;
+                second.EntityAngle = 0;
+            }
+        }
+
+        private void BendSecondPart(Cell first, Cell second, Cell third)
+        {
             // bent second part
+            int w = _area.WidthInCells;
+            int h = _area.HeightInCells;
             var (x0, y0) = (first.X, first.Y);
             var (x2, y2) = (third.X, third.Y);
-            var (x, y) = (x2 - x0, y2 - y0);
+            var (x, y) = (x0 - x2, y0 - y2);
 
-            if (x == -1 && y == -1)
-            {
-                second.Entity = Entity.SnakeBendBodyPart;
-                second.EntityAngle = second.X == first.X ? 270 : 90;
-            }
-
-            if (x == -1 && y == 1)
-            {
-                second.Entity = Entity.SnakeBendBodyPart;
-                second.EntityAngle = second.X == first.X ? 180 : 0;
-            }
-
-            if (x == 1 && y == 1)
+            if (x == -1 && y == -1 ||
+                x == -1 && y == h - 1 ||
+                x == w - 1 && y == -1)
             {
                 second.Entity = Entity.SnakeBendBodyPart;
                 second.EntityAngle = second.X == first.X ? 90 : 270;
             }
 
-            if (x == 1 && y == -1)
+            if (x == -1 && y == 1 ||
+                x == -1 && y == 1 - h ||
+                x == w - 1 && y == 1)
+            {
+                second.Entity = Entity.SnakeBendBodyPart;
+                second.EntityAngle = second.X == first.X ? 180 : 0;
+            }
+
+            if (x == 1 && y == 1 ||
+                x == 1 && y == 1 - h ||
+                x == 1 - w && y == 1)
+            {
+                second.Entity = Entity.SnakeBendBodyPart;
+                second.EntityAngle = second.X == first.X ? 270 : 90;
+            }
+
+            if (x == 1 && y == -1 ||
+                x == 1 && y == h - 1 ||
+                x == 1 - w && y == -1)
             {
                 second.Entity = Entity.SnakeBendBodyPart;
                 second.EntityAngle = second.X == first.X ? 0 : 180;
             }
+        }
 
-            // straight second part
-            if (x == 0 && y == -2)
+        private void SmoothEndPart()
+        {
+            // end part
+            var end = Body.Last();
+            if (end.Entity == Entity.SnakeBendBodyPart)
             {
-                second.Entity = Entity.SnakeStraightBodyPart;
-                second.EntityAngle = 90;
-            }
+                var beforeEnd = Body.ElementAt(Body.Count - 2);
 
-            if (x == 0 && y == 2)
-            {
-                second.Entity = Entity.SnakeStraightBodyPart;
-                second.EntityAngle = 270;
-            }
-
-            if (x == -2 && y == 0)
-            {
-                second.Entity = Entity.SnakeStraightBodyPart;
-                second.EntityAngle = 180;
-            }
-
-            if (x == 2 && y == 0)
-            {
-                second.Entity = Entity.SnakeStraightBodyPart;
-                second.EntityAngle = 0;
+                if (beforeEnd.Entity != Entity.SnakeBendBodyPart)
+                {
+                    end.EntityAngle = beforeEnd.EntityAngle;
+                }
+                else
+                {
+                    switch (beforeEnd.EntityAngle)
+                    {
+                        case 0:
+                            end.EntityAngle = end.Y == beforeEnd.Y ? 0 : 90;
+                            break;
+                        case 90:
+                            end.EntityAngle = end.Y == beforeEnd.Y ? 180 : 90;
+                            break;
+                        case 180:
+                            end.EntityAngle = end.Y == beforeEnd.Y ? 180 : 270;
+                            break;
+                        case 270:
+                            end.EntityAngle = end.Y == beforeEnd.Y ? 0 : 270;
+                            break;
+                    }
+                }
             }
         }
     }

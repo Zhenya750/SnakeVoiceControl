@@ -109,10 +109,12 @@ namespace SnakeVoiceControl
 
             _timer.Stop();
             _goneSeconds = new TimeSpan(0);
+
             _area.TransformEntities(Entity.SnakeAliveHead, Entity.Empty);
             _area.TransformEntities(Entity.SnakeStraightBodyPart, Entity.Empty);
             _area.TransformEntities(Entity.SnakeBendBodyPart, Entity.Empty);
             _area.TransformEntities(Entity.SnakeDeadHead, Entity.Empty);
+            _area.TransformEntities(Entity.SnakeEndBodyPart, Entity.Empty);
             _area.TransformEntities(Entity.Target, Entity.Empty);
             _area.TransformEntities(Entity.Wall, Entity.Empty);
             _snake = new ClassicSnake(_area);

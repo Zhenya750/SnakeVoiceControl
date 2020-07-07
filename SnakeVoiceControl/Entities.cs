@@ -9,5 +9,6 @@
         SnakeAliveHead,
         SnakeDeadHead,
         SnakeBendBodyPart,
+        SnakeEndBodyPart,
     }
 }

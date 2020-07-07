@@ -16,8 +16,6 @@ namespace SnakeVoiceControl
         private Dictionary<Cell, Rectangle> _cellToRect;
         private readonly ImageBrush[] _entityToImage;
         private readonly SolidColorBrush[] _entityToBrush;
-        private readonly int[] _entityToSize;
-        private readonly int[] _entityToRadius;
         public static readonly int CellSize = 20; 
 
         public Drawer(Canvas canvas)
@@ -34,40 +32,27 @@ namespace SnakeVoiceControl
                 Brushes.LightGreen,
                 Brushes.Pink,
                 Brushes.Yellow,
+                Brushes.Blue,
             };
 
-            _entityToSize = new int[]
+            try
             {
-                20,
-                20,
-                20,
-                18,
-                18,
-                18,
-                18,
-            };
-
-            _entityToRadius = new int[]
+                _entityToImage = new ImageBrush[]
+                {
+                    null,
+                    null,
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/target.png") as ImageSource),
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeStraightBodyPart.png") as ImageSource),
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeAliveHead.png") as ImageSource),
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeDeadHead.png") as ImageSource),
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeBendBodyPart.png") as ImageSource),
+                    new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/SnakeEndBodyPart.png") as ImageSource),
+                };
+            }
+            catch (Exception)
             {
-                0,
-                0,
-                7,
-                4,
-                4,
-                4,
-                4,
-            };
-
-            _entityToImage = new ImageBrush[]
-            {
-                null,
-                null,
-                new ImageBrush(new ImageSourceConverter().ConvertFromString("Images/target.png") as ImageSource),
-                null,
-                null,
-                null,
-                null,
-            };
+                _entityToImage = new ImageBrush[] { null, null, null, null, null, null, null, null };
+            }
         }
 
         public void DrawCells(ICollection<Cell> cells)
@@ -106,9 +91,8 @@ namespace SnakeVoiceControl
                 rect.Fill = _entityToBrush[(int)cell.Entity];
             }
 
-            rect.Width = rect.Height = _entityToSize[(int)cell.Entity];
+            rect.Width = rect.Height = CellSize;
             rect.RenderTransform = new RotateTransform(cell.EntityAngle, rect.Width / 2, rect.Height / 2);
-            rect.RadiusX = rect.RadiusY = _entityToRadius[(int)cell.Entity];
         }
     }
 }

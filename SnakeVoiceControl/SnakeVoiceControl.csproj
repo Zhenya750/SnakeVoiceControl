@@ -115,7 +115,12 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\SnakeBendBodyPart.png" />
+    <Resource Include="Images\SnakeEndBodyPart.png" />
+    <Resource Include="Images\SnakeAliveHead.png" />
+    <Resource Include="Images\SnakeStraightBodyPart.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\background.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -123,6 +128,9 @@
     <Resource Include="Images\target.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\SnakeDeadHead.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
